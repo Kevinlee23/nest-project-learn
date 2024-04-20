@@ -15,7 +15,8 @@ async function bootstrap() {
     .setTitle('Learn-Project')
     .setDescription('学习用项目 swagger')
     .setVersion('0.1.0')
-    .addTag('Learn')
+    .addTag('Users')
+    .addTag('Auth')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

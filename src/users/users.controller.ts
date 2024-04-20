@@ -5,7 +5,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -14,6 +14,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/constants/role.enum';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
