@@ -9,11 +9,11 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 export class BlogService {
   constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
 
-  findOne(id: string) {
+  findOne(id: string): Promise<BlogDocument> {
     return this.blogModel.findById(id);
   }
 
-  list(): Promise<Blog[]> {
+  list(): Promise<BlogDocument[]> {
     return this.blogModel.find().exec();
   }
 
