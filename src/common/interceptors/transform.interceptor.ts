@@ -20,10 +20,12 @@ export class TransformInterceptor<T>
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response<T>> {
-    return next
-      .handle()
-      .pipe(
-        map((data) => ({ code: 200, message: data.message, data: data.data })),
-      );
+    return next.handle().pipe(
+      map((data) => ({
+        code: 200,
+        message: data.message,
+        data: data.data,
+      })),
+    );
   }
 }

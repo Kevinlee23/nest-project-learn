@@ -5,9 +5,11 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // 配合 class-validator 进行全局验证
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
+      skipMissingProperties: true,
     }),
   );
 
