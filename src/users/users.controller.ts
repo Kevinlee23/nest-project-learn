@@ -35,7 +35,7 @@ export class UsersController {
   })
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
-  @Post('/create')
+  @Post('create')
   @UseInterceptors(TransformInterceptor<CreateUserDto>)
   create(@Body() user: CreateUserDto) {
     return this.usersService.create(user);

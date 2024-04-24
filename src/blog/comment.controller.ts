@@ -11,7 +11,9 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { Comment } from './entities/comment.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('comment')
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
