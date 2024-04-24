@@ -5,15 +5,14 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
   Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -36,6 +35,7 @@ export class AuthController {
     },
   })
   @HttpCode(HttpStatus.OK)
+  @Public()
   @Post('login')
   @UseInterceptors(TransformInterceptor<string>)
   signin(@Body() signInDto: SigninDto) {
@@ -60,7 +60,6 @@ export class AuthController {
       },
     },
   })
-  @UseGuards(AuthGuard)
   @Get('profile')
   @UseInterceptors(TransformInterceptor<any>)
   getProfile(@Request() req) {

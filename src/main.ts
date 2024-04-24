@@ -9,6 +9,7 @@ async function bootstrap() {
   // 配合 class-validator 进行全局验证
   app.useGlobalPipes(
     new ValidationPipe({
+      whitelist: true,
       skipMissingProperties: true,
     }),
   );

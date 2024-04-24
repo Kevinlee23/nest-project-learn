@@ -30,7 +30,7 @@ export class CommentService {
   async list(blogId: string): Promise<Comment[]> {
     const res: BlogDocument = await this.blogModel
       .findOne({ _id: blogId })
-      .populate('commentIds');
+      .populate('commentIds'); // 根据 blog 中留存的 comment ids 查找出 comment list
 
     return res.commentIds;
   }
