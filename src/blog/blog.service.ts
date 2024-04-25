@@ -14,7 +14,7 @@ export class BlogService {
   }
 
   list(): Promise<BlogDocument[]> {
-    return this.blogModel.find().exec();
+    return this.blogModel.find().sort({ createTime: -1 }).exec();
   }
 
   async create(blog: CreateBlogDto): Promise<BlogDocument> {

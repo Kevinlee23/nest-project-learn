@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import type { Music } from '../entities/blog.entity';
 
 export class CreateBlogDto {
   @ApiProperty()
@@ -8,7 +9,7 @@ export class CreateBlogDto {
 
   @ApiProperty()
   @IsNumber()
-  likeNum?: number;
+  likeNum?: number = 0;
 
   @ApiProperty()
   @IsString()
@@ -20,7 +21,7 @@ export class CreateBlogDto {
 
   @ApiProperty()
   @IsArray()
-  musicList?: string[];
+  musicList?: Music[];
 
   @ApiProperty()
   @IsArray()

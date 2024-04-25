@@ -4,6 +4,15 @@ import { Comment } from './comment.entity';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
+export type Music = {
+  src: string;
+  poster?: string;
+  name: string;
+  artist?: string;
+  lyric?: string;
+  album?: string;
+};
+
 @Schema()
 export class Blog {
   @Prop()
@@ -18,8 +27,8 @@ export class Blog {
   @Prop([String])
   imageList?: string[];
 
-  @Prop([String])
-  musicList?: string[];
+  @Prop([Object])
+  musicList?: Music[];
 
   @Prop()
   createDate: string;

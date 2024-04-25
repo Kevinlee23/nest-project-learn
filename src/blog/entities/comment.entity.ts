@@ -13,6 +13,9 @@ export class Comment {
   parentId?: string;
 
   @Prop()
+  parantName?: string;
+
+  @Prop()
   content: string;
 
   @Prop()
@@ -20,6 +23,15 @@ export class Comment {
 
   @Prop()
   authorEmail: string;
+
+  @Prop()
+  isOriginal: boolean;
+
+  @Prop()
+  createDate: string;
+
+  @Prop()
+  createTime: string;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
