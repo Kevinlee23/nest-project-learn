@@ -4,6 +4,11 @@ import { Model } from 'mongoose';
 import { Blog, BlogDocument } from './entities/blog.entity';
 import { CommenDocument, Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { getServiceTime } from 'src/common/utils/utils';
+import {
+  Pagination,
+  PaginationResponse,
+} from 'src/common/utils/types/pagination.type';
 
 @Injectable()
 export class CommentService {
@@ -13,16 +18,7 @@ export class CommentService {
   ) {}
 
   async insert(comment: CreateCommentDto): Promise<boolean> {
-    const date = new Date();
-    const createDate = `${date.getFullYear()}-${date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)}-${date.getDate()}`;
-
-    const createHour =
-      date.getHours() > 10 ? date.getHours() : '0' + date.getHours();
-    const createMinit =
-      date.getMinutes() > 10 ? date.getMinutes() : '0' + date.getMinutes();
-    const createSec =
-      date.getSeconds() > 10 ? date.getSeconds() : '0' + date.getSeconds();
-    const createTime = `${createDate} ${createHour}:${createMinit}:${createSec}`;
+    const { createDate, createTime } = getServiceTime();
 
     const res: CommenDocument = await this.commentModel.create({
       ...comment,
@@ -42,11 +38,26 @@ export class CommentService {
     }
   }
 
-  async list(blogId: string): Promise<Comment[]> {
+  async list(
+    pagination: Pagination & { blogId: string },
+  ): Promise<PaginationResponse<Comment>> {
+    const { page, size, blogId } = pagination;
+
+    const totalRes = await this.blogModel.findOne({ _id: blogId });
+    const total = totalRes.commentIds.length;
+
+    // 根据 blog 中留存的 comment ids 查找出 comment list
     const res: BlogDocument = await this.blogModel
       .findOne({ _id: blogId })
-      .populate('commentIds'); // 根据 blog 中留存的 comment ids 查找出 comment list
+      .populate({
+        path: 'commentIds',
+        options: {
+          skip: (page - 1) * size,
+          limit: size,
+          sort: { createTime: -1 },
+        },
+      });
 
-    return res.commentIds;
+    return { total, rows: res.commentIds };
   }
 }

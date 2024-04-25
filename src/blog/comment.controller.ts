@@ -3,7 +3,6 @@ import {
   Controller,
   InternalServerErrorException,
   Post,
-  Query,
   UseInterceptors,
   Get,
 } from '@nestjs/common';
@@ -12,6 +11,10 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { Comment } from './entities/comment.entity';
 import { ApiTags } from '@nestjs/swagger';
+import type {
+  Pagination,
+  PaginationResponse,
+} from 'src/common/utils/types/pagination.type';
 
 @ApiTags('comment')
 @Controller('comment')
@@ -32,9 +35,14 @@ export class CommentController {
 
   @UseInterceptors(TransformInterceptor<Comment[]>)
   @Get('/list')
-  async list(@Query('blogId') blogId: string) {
+  async list(@Body() query: Pagination & { blogId: string }) {
+    if (query.page <= 0) {
+      throw new InternalServerErrorException('页码不能小于零');
+    }
+
     try {
-      const data: Comment[] = await this.commentService.list(blogId);
+      const data: PaginationResponse<Comment> =
+        await this.commentService.list(query);
 
       return { data, message: '查询成功' };
     } catch (error) {

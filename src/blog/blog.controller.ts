@@ -13,6 +13,10 @@ import { BlogDocument } from './entities/blog.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { ApiTags } from '@nestjs/swagger';
+import type {
+  Pagination,
+  PaginationResponse,
+} from 'src/common/utils/types/pagination.type';
 
 @ApiTags('blog')
 @Controller('blog')
@@ -21,8 +25,13 @@ export class BlogController {
 
   @UseInterceptors(TransformInterceptor<BlogDocument[]>)
   @Get('list')
-  async list() {
-    const data: BlogDocument[] = await this.blogService.list();
+  async list(@Body() query: Pagination) {
+    if (query.page <= 0) {
+      throw new InternalServerErrorException('页码不能小于零');
+    }
+
+    const data: PaginationResponse<BlogDocument> =
+      await this.blogService.list(query);
     return { data, message: '获取blog列表成功' };
   }
 

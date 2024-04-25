@@ -4,6 +4,11 @@ import { Model } from 'mongoose';
 import { Blog, BlogDocument } from './entities/blog.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import type {
+  Pagination,
+  PaginationResponse,
+} from 'src/common/utils/types/pagination.type';
+import { getServiceTime } from 'src/common/utils/utils';
 
 @Injectable()
 export class BlogService {
@@ -13,21 +18,25 @@ export class BlogService {
     return this.blogModel.findById(id);
   }
 
-  list(): Promise<BlogDocument[]> {
-    return this.blogModel.find().sort({ createTime: -1 }).exec();
+  async list(
+    pagination: Pagination,
+  ): Promise<PaginationResponse<BlogDocument>> {
+    const { size, page } = pagination;
+    const total = await this.blogModel.countDocuments();
+    console.log(total);
+    return {
+      rows: await this.blogModel
+        .find()
+        .sort({ createTime: -1 })
+        .skip((page - 1) * size)
+        .limit(size)
+        .exec(),
+      total: total,
+    };
   }
 
   async create(blog: CreateBlogDto): Promise<BlogDocument> {
-    const date = new Date();
-    const createDate = `${date.getFullYear()}-${date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)}-${date.getDate()}`;
-
-    const createHour =
-      date.getHours() > 10 ? date.getHours() : '0' + date.getHours();
-    const createMinit =
-      date.getMinutes() > 10 ? date.getMinutes() : '0' + date.getMinutes();
-    const createSec =
-      date.getSeconds() > 10 ? date.getSeconds() : '0' + date.getSeconds();
-    const createTime = `${createDate} ${createHour}:${createMinit}:${createSec}`;
+    const { createDate, createTime } = getServiceTime();
 
     const newBlog: BlogDocument = await this.blogModel.create({
       ...blog,

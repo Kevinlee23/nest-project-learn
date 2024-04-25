@@ -31,5 +31,5 @@ export class CreateCommentDto {
 
   @ApiProperty()
   @IsBoolean()
-  isOriginal: boolean;
+  isOriginal?: boolean = false;
 }
