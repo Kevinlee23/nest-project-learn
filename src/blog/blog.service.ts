@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Blog, BlogDocument } from './entities/blog.entity';
+import { Blog } from './entities/blog.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import type {
@@ -14,13 +14,11 @@ import { getServiceTime } from 'src/common/utils/utils';
 export class BlogService {
   constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
 
-  findOne(id: string): Promise<BlogDocument> {
+  findOne(id: string): Promise<Blog> {
     return this.blogModel.findById(id);
   }
 
-  async list(
-    pagination: Pagination,
-  ): Promise<PaginationResponse<BlogDocument>> {
+  async list(pagination: Pagination): Promise<PaginationResponse<Blog>> {
     const { size, page } = pagination;
     const total = await this.blogModel.countDocuments();
     console.log(total);
@@ -35,10 +33,10 @@ export class BlogService {
     };
   }
 
-  async create(blog: CreateBlogDto): Promise<BlogDocument> {
+  async create(blog: CreateBlogDto): Promise<Blog> {
     const { createDate, createTime } = getServiceTime();
 
-    const newBlog: BlogDocument = await this.blogModel.create({
+    const newBlog: Blog = await this.blogModel.create({
       ...blog,
       createDate,
       createTime,
