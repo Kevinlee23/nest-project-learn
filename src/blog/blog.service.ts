@@ -27,7 +27,7 @@ export class BlogService {
         .sort({ createTime: -1 })
         .skip((page - 1) * size)
         .limit(size)
-        .populate({path: 'commentIds', options: {strictPopulate: false}})
+        .populate({ path: 'commentIds', options: { strictPopulate: false } })
         .exec(),
       total: total,
     };
