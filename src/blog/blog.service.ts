@@ -21,13 +21,13 @@ export class BlogService {
   async list(pagination: Pagination): Promise<PaginationResponse<Blog>> {
     const { size, page } = pagination;
     const total = await this.blogModel.countDocuments();
-    console.log(total);
     return {
       rows: await this.blogModel
         .find()
         .sort({ createTime: -1 })
         .skip((page - 1) * size)
         .limit(size)
+        .populate({path: 'commentIds', options: {strictPopulate: false}})
         .exec(),
       total: total,
     };
