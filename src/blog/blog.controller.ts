@@ -17,12 +17,14 @@ import type {
   Pagination,
   PaginationResponse,
 } from 'src/common/utils/types/pagination.type';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('blog')
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
+  @Public()
   @UseInterceptors(TransformInterceptor<Blog[]>)
   @Get('list')
   async list(@Body() query: Pagination) {
@@ -34,6 +36,7 @@ export class BlogController {
     return { data, message: '获取blog列表成功' };
   }
 
+  @Public()
   @UseInterceptors(TransformInterceptor<Blog>)
   @Get('findOne/:id')
   async findOne(@Param('id') id: string) {
