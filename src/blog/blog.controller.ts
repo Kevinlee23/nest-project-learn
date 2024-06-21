@@ -62,4 +62,17 @@ export class BlogController {
       throw InternalServerErrorException;
     }
   }
+
+  @UseInterceptors(TransformInterceptor<null>)
+  @Post('deleteOne')
+  async deleteOne(@Body() body: { id: string }) {
+    type Res = { statu: boolean; message: string };
+    const res: Res = await this.blogService.delete(body.id);
+
+    if (res.statu) {
+      return { data: null, message: res.message };
+    } else {
+      throw new InternalServerErrorException(res.message);
+    }
+  }
 }

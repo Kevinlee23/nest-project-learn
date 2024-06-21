@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Blog } from './entities/blog.entity';
+import { Comment } from './entities/comment.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import type {
@@ -12,7 +13,10 @@ import { getServiceTime } from 'src/common/utils/utils';
 
 @Injectable()
 export class BlogService {
-  constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
+  constructor(
+    @InjectModel(Blog.name) private blogModel: Model<Blog>,
+    @InjectModel(Comment.name) private commentModel: Model<Comment>,
+  ) {}
 
   findOne(id: string): Promise<Blog> {
     return this.blogModel.findById(id);
@@ -52,6 +56,26 @@ export class BlogService {
     } catch (error) {
       console.error(error);
       return false;
+    }
+  }
+
+  async delete(id: string) {
+    const item = await this.findOne(id);
+
+    if (item) {
+      const commentIds = item.commentIds;
+      try {
+        await this.commentModel.deleteMany({
+          _id: { $in: commentIds },
+        });
+        await this.blogModel.deleteOne({ _id: id });
+
+        return { statu: true, message: '删除成功' };
+      } catch (error) {
+        return { statu: false, message: '删除失败, 内部错误' };
+      }
+    } else {
+      return { statu: true, message: '删除失败, 该文章不存在' };
     }
   }
 }
