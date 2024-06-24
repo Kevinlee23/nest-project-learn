@@ -8,7 +8,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
-import { BlogService } from './blog.service';
+import { BlogService, ServiceBolRes } from './blog.service';
 import { Blog } from './entities/blog.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -54,22 +54,22 @@ export class BlogController {
   @UseInterceptors(TransformInterceptor<null>)
   @Post('update')
   async update(@Body() blog: UpdateBlogDto) {
-    const res: boolean = await this.blogService.update(blog);
+    const res: ServiceBolRes = await this.blogService.update(blog);
 
-    if (res) {
-      return { data: null, message: '修改成功' };
+    if (res.status) {
+      return { data: null, message: res.message };
     } else {
-      throw InternalServerErrorException;
+      throw new InternalServerErrorException(res.message);
     }
   }
 
   @UseInterceptors(TransformInterceptor<null>)
   @Post('deleteOne')
   async deleteOne(@Body() body: { id: string }) {
-    type Res = { statu: boolean; message: string };
-    const res: Res = await this.blogService.delete(body.id);
 
-    if (res.statu) {
+    const res: ServiceBolRes = await this.blogService.delete(body.id);
+
+    if (res.status) {
       return { data: null, message: res.message };
     } else {
       throw new InternalServerErrorException(res.message);

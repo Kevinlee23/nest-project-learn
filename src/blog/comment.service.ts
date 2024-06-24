@@ -10,6 +10,8 @@ import {
   PaginationResponse,
 } from 'src/common/utils/types/pagination.type';
 
+export type ServiceBolRes = { status: boolean; message: string };
+
 @Injectable()
 export class CommentService {
   constructor(
@@ -17,7 +19,7 @@ export class CommentService {
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
   ) {}
 
-  async insert(comment: CreateCommentDto): Promise<boolean> {
+  async insert(comment: CreateCommentDto): Promise<ServiceBolRes> {
     const { createDate, createTime } = getServiceTime();
 
     const res: CommenDocument = await this.commentModel.create({
@@ -32,9 +34,9 @@ export class CommentService {
         { $push: { commentIds: res._id } },
       );
 
-      return true;
+      return { status: true, message: '评论成功' };
     } else {
-      return false;
+      return { status: false, message: '评论失败, 内部错误' };
     }
   }
 

@@ -6,7 +6,7 @@ import {
   UseInterceptors,
   Get,
 } from '@nestjs/common';
-import { CommentService } from './comment.service';
+import { CommentService, ServiceBolRes } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { Comment } from './entities/comment.entity';
@@ -24,12 +24,12 @@ export class CommentController {
   @UseInterceptors(TransformInterceptor<null>)
   @Post('/insert')
   async insert(@Body() comment: CreateCommentDto) {
-    const res = await this.commentService.insert(comment);
+    const res: ServiceBolRes = await this.commentService.insert(comment);
 
-    if (res) {
-      return { data: null, message: '评论成功' };
+    if (res.status) {
+      return { data: null, message: res.message };
     } else {
-      throw InternalServerErrorException;
+      throw new InternalServerErrorException(res.message);
     }
   }
 
