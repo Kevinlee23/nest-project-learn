@@ -8,15 +8,11 @@ export class UploadService {
   getToken(data: {
     accessKeyId: string;
     accessKeySecret: string;
+    roleKey: string;
   }): Promise<any> {
-    const { accessKeyId, accessKeySecret } = data;
+    const { accessKeyId, accessKeySecret, roleKey } = data;
     let sts = new STS({ accessKeyId, accessKeySecret });
 
-    return sts.assumeRole(
-      'acs:ram::1279210754830043:role/oss-control',
-      '',
-      '3600',
-      'sessiontest',
-    );
+    return sts.assumeRole(roleKey, '', '3600', 'sessiontest');
   }
 }
