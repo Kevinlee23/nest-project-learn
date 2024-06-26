@@ -17,6 +17,7 @@ export class UploadController {
       AccessKeyId: result.credentials.AccessKeyId,
       AccessKeySecret: result.credentials.AccessKeySecret,
       SecurityToken: result.credentials.SecurityToken,
+      Expiration: result.credentials.Expiration
     };
   }
 }

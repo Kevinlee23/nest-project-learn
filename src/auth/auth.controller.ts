@@ -34,7 +34,6 @@ export class AuthController {
       },
     },
   })
-  @HttpCode(HttpStatus.OK)
   @Public()
   @Post('login')
   @UseInterceptors(TransformInterceptor<string>)

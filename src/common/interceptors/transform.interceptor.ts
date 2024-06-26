@@ -23,7 +23,7 @@ export class TransformInterceptor<T>
     return next.handle().pipe(
       map(
         (object): Response<T> => ({
-          code: 200,
+          code: object.code || 200,
           message: object.message,
           data: object.data,
         }),
