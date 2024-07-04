@@ -26,7 +26,7 @@ export class BlogController {
 
   @Public()
   @UseInterceptors(TransformInterceptor<Blog[]>)
-  @Get('list')
+  @Post('list')
   async list(@Body() query: Pagination) {
     if (query.page <= 0) {
       throw new InternalServerErrorException('页码不能小于零');
@@ -66,7 +66,6 @@ export class BlogController {
   @UseInterceptors(TransformInterceptor<null>)
   @Post('deleteOne')
   async deleteOne(@Body() body: { id: string }) {
-
     const res: ServiceBolRes = await this.blogService.delete(body.id);
 
     if (res.status) {
