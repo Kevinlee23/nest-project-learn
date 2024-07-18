@@ -21,8 +21,8 @@ import type {
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @UseInterceptors(TransformInterceptor<null>)
   @Post('/insert')
+  @UseInterceptors(TransformInterceptor<null>)
   async insert(@Body() comment: CreateCommentDto) {
     const res: ServiceBolRes = await this.commentService.insert(comment);
 
@@ -33,8 +33,8 @@ export class CommentController {
     }
   }
 
-  @UseInterceptors(TransformInterceptor<Comment[]>)
   @Get('/list')
+  @UseInterceptors(TransformInterceptor<Comment[]>)
   async list(@Body() query: Pagination & { blogId: string }) {
     if (query.page <= 0) {
       throw new InternalServerErrorException('页码不能小于零');

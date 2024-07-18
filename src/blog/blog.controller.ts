@@ -6,6 +6,7 @@ import {
   Body,
   UseInterceptors,
   InternalServerErrorException,
+  Headers,
 } from '@nestjs/common';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { BlogService, ServiceBolRes } from './blog.service';
@@ -36,23 +37,23 @@ export class BlogController {
     return { data, message: '获取blog列表成功' };
   }
 
+  @Get('findOne/:id')
   @Public()
   @UseInterceptors(TransformInterceptor<Blog>)
-  @Get('findOne/:id')
   async findOne(@Param('id') id: string) {
     const data: Blog = await this.blogService.findOne(id);
     return { data, message: '获取blog成功' };
   }
 
-  @UseInterceptors(TransformInterceptor<Blog>)
   @Post('create')
+  @UseInterceptors(TransformInterceptor<Blog>)
   async create(@Body() blog: CreateBlogDto) {
     const data: Blog = await this.blogService.create(blog);
     return { data, message: '创建成功' };
   }
 
-  @UseInterceptors(TransformInterceptor<null>)
   @Post('update')
+  @UseInterceptors(TransformInterceptor<null>)
   async update(@Body() blog: UpdateBlogDto) {
     const res: ServiceBolRes = await this.blogService.update(blog);
 
@@ -63,8 +64,8 @@ export class BlogController {
     }
   }
 
-  @UseInterceptors(TransformInterceptor<null>)
   @Post('deleteOne')
+  @UseInterceptors(TransformInterceptor<null>)
   async deleteOne(@Body() body: { id: string }) {
     const res: ServiceBolRes = await this.blogService.delete(body.id);
 
@@ -72,6 +73,27 @@ export class BlogController {
       return { data: null, message: res.message };
     } else {
       throw new InternalServerErrorException(res.message);
+    }
+  }
+
+  @Post('like')
+  @Public()
+  @UseInterceptors(TransformInterceptor<null>)
+  async likeBlog(
+    @Body() body: { blogId: string; cal: string },
+    @Headers() header,
+  ) {
+    const uuid = header['x-session-uuid'];
+
+    try {
+      await this.blogService.likeCal(uuid, body.blogId, body.cal);
+
+      return {
+        data: null,
+        message: '操作成功',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('系统错误, 操作失败');
     }
   }
 }

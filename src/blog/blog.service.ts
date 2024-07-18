@@ -10,6 +10,7 @@ import type {
   PaginationResponse,
 } from 'src/common/utils/types/pagination.type';
 import { getServiceTime } from 'src/common/utils/utils';
+import { VisitorService } from '../visitor/visitor.service';
 
 export type ServiceBolRes = { status: boolean; message: string };
 
@@ -18,6 +19,7 @@ export class BlogService {
   constructor(
     @InjectModel(Blog.name) private blogModel: Model<Blog>,
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
+    private readonly visitorService: VisitorService,
   ) {}
 
   findOne(id: string): Promise<Blog> {
@@ -79,5 +81,16 @@ export class BlogService {
     } else {
       return { status: true, message: '删除失败, 该文章不存在' };
     }
+  }
+
+  async likeCal(uuid: string, blogId: string, cal: string) {
+    // 更新 blog
+    await this.blogModel.updateOne(
+      { _id: blogId },
+      { $inc: { likeNum: cal === 'add' ? 1 : -1 } },
+    );
+
+    // 更新访客数据
+    await this.visitorService.updateLikes(uuid, blogId, cal);
   }
 }
