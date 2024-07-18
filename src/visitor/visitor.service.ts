@@ -33,4 +33,10 @@ export class VisitorService {
         .exec();
     }
   }
+
+  async updateNickname(uuid, nickname) {
+    return await this.visitorModel
+      .updateOne({ uuid }, { nickname: nickname })
+      .exec();
+  }
 }

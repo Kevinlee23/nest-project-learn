@@ -15,6 +15,7 @@ import type {
   Pagination,
   PaginationResponse,
 } from 'src/common/utils/types/pagination.type';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('comment')
 @Controller('comment')
@@ -22,6 +23,7 @@ export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Post('/insert')
+  @Public()
   @UseInterceptors(TransformInterceptor<null>)
   async insert(@Body() comment: CreateCommentDto) {
     const res: ServiceBolRes = await this.commentService.insert(comment);
@@ -34,6 +36,7 @@ export class CommentController {
   }
 
   @Get('/list')
+  @Public()
   @UseInterceptors(TransformInterceptor<Comment[]>)
   async list(@Body() query: Pagination & { blogId: string }) {
     if (query.page <= 0) {

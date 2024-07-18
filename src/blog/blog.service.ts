@@ -35,7 +35,22 @@ export class BlogService {
         .sort({ createTime: -1 })
         .skip((page - 1) * size)
         .limit(size)
-        .populate({ path: 'commentIds', options: { strictPopulate: false } })
+        .populate({
+          path: 'commentIds',
+          options: {
+            strictPopulate: false,
+            populate: [
+              {
+                path: 'parentId',
+                select: ['authorId'],
+                options: {
+                  populate: { path: 'authorId', select: ['nickname'] },
+                },
+              },
+              { path: 'authorId', select: ['nickname'] },
+            ],
+          },
+        })
         .exec(),
       total: total,
     };

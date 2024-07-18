@@ -7,6 +7,9 @@ export class Visitor {
 
   @Prop()
   likes: string[];
+
+  @Prop()
+  nickname?: string;
 }
 
 export const VisitorSchema = SchemaFactory.createForClass(Visitor);

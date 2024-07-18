@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCommentDto {
   @ApiProperty()
@@ -12,22 +12,13 @@ export class CreateCommentDto {
 
   @ApiProperty()
   @IsString()
-  parentName?: string;
-
-  @ApiProperty()
-  @IsString()
   @IsNotEmpty()
   content: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  authorName: string;
-
-  @ApiProperty()
-  @IsEmail()
-  @IsNotEmpty()
-  authorEmail: string;
+  authorId: string;
 
   @ApiProperty()
   @IsBoolean()

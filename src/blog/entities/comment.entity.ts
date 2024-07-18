@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Blog } from './blog.entity';
+import { Visitor } from 'src/visitor/entities/visitors.entity';
 
 export type CommenDocument = HydratedDocument<Comment>;
 
@@ -9,23 +10,17 @@ export class Comment {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Blog' })
   blogId: Blog;
 
-  @Prop()
-  parentId?: string;
-
-  @Prop()
-  parantName?: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' })
+  parentId?: Comment;
 
   @Prop()
   content: string;
 
-  @Prop()
-  authorName: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Visitor' })
+  authorId: Visitor;
 
   @Prop()
-  authorEmail: string;
-
-  @Prop()
-  isOriginal: boolean;
+  isOriginal?: boolean = false;
 
   @Prop()
   createDate: string;
